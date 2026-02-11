@@ -98,7 +98,7 @@ export default function PackagesPage() {
       const activeTab = next?.tab ?? tab;
       const activePage = next?.page ?? page;
 
-      const res = await axiosBrowser.post("/bff/packages", {
+      const res = await axiosBrowser.post("/api/packages", {
         search: search,
         category_id: null,
         type: [activeTab],

@@ -90,7 +90,7 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const res = await axiosBrowser.post<LoginResponse>("/bff/auth/login", {
+      const res = await axiosBrowser.post<LoginResponse>("/api/auth/login", {
         phone,
         password,
         device_name: "web", // مهم للـ Sanctum token naming
