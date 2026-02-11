@@ -20,7 +20,7 @@ export async function POST(req: Request) {
         const client = await laravelAuthClient();
 
         // IMPORTANT: endpoint based on your Postman
-        const res = await client.post("/api/backend/admin/cards/import", body);
+        const res = await client.post("/backend/admin/cards/import", body);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {

@@ -35,7 +35,7 @@ export async function GET(req: Request) {
         const client = await laravelAuthClient();
 
         // Laravel: POST /api/admin/categories/index
-        const res = await client.post("/api/backend/admin/categories/index", {
+        const res = await client.post("/backend/admin/categories/index", {
             ...params,
             // لاحقًا لو احتجت with_packages من هنا
             with_packages: params.with_packages ?? 0,
@@ -83,7 +83,7 @@ export async function POST(req: Request) {
         };
 
         const client = await laravelAuthClient();
-        const res = await client.post("/api/backend/admin/categories", payload);
+        const res = await client.post("/backend/admin/categories", payload);
 
         return NextResponse.json(res.data, { status: 201 });
     } catch (err: any) {

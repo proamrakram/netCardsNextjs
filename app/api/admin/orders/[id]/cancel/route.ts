@@ -8,7 +8,7 @@ export async function GET(
         const { id } = await context.params;
 
         const client = await laravelAuthClient();
-        const res = await client.get(`/api/backend/admin/orders/${id}/cancel`);
+        const res = await client.get(`/backend/admin/orders/${id}/cancel`);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {

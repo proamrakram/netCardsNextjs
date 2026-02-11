@@ -9,7 +9,7 @@ export async function POST(req: Request) {
         const client = await laravelAuthClient();
 
         // Laravel: POST /api/admin/cards (index) أو عدّل حسب مسارك الحقيقي
-        const res = await client.post("/api/backend/admin/cards/index", body);
+        const res = await client.post("/backend/admin/cards/index", body);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {

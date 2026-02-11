@@ -16,7 +16,7 @@ export async function GET(req: Request) {
         }
 
         const client = await laravelAuthClient();
-        const res = await client.get(`/api/backend/user/packages/${packageId}`);
+        const res = await client.get(`/backend/user/packages/${packageId}`);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         }
 
         const client = await laravelAuthClient();
-        const res = await client.post("/api/backend/user/orders/store", {
+        const res = await client.post("/backend/user/orders/store", {
             package_id: Number(body.package_id),
             payment_method: body.payment_method ?? "BOP",
             quantity: body.quantity,

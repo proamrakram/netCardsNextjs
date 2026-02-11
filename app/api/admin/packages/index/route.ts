@@ -11,7 +11,7 @@ export async function GET(req: Request) {
         const params = queryToObject(url);
 
         const client = await laravelAuthClient();
-        const res = await client.get("/api/backend/admin/packages/index", { params });
+        const res = await client.get("/backend/admin/packages/index", { params });
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
         const body = await req.json();
 
         const client = await laravelAuthClient();
-        const res = await client.post("/api/backend/admin/packages/index", body);
+        const res = await client.post("/backend/admin/packages/index", body);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {

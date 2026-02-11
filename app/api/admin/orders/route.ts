@@ -49,7 +49,7 @@ export async function GET(req: Request) {
         });
 
         const client = await laravelAuthClient();
-        const res = await client.post("/api/backend/admin/orders/index", payload);
+        const res = await client.post("/backend/admin/orders/index", payload);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
         const payload = cleanPayload({ ...(body ?? {}) });
 
         const client = await laravelAuthClient();
-        const res = await client.post("/api/backend/admin/orders/index", payload);
+        const res = await client.post("/backend/admin/orders/index", payload);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {

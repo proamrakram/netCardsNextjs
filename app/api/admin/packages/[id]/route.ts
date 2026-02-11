@@ -29,7 +29,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         const client = await laravelAuthClient();
 
         // ✅ حسب شغلك الحالي: /api/admin/...
-        const res = await client.get(`/api/backend/admin/packages/${id}`, {
+        const res = await client.get(`/backend/admin/packages/${id}`, {
             params: { with_category, with_counts },
         });
 
@@ -69,7 +69,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         });
 
         const client = await laravelAuthClient();
-        const res = await client.put(`/api/backend/admin/packages/${id}`, payload);
+        const res = await client.put(`/backend/admin/packages/${id}`, payload);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {

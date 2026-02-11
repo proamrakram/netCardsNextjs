@@ -22,7 +22,7 @@ export async function POST(req: Request) {
         const body = await req.json();
 
         const client = await laravelAuthClient();
-        const res = await client.post("/api/backend/user/packages/index", body);
+        const res = await client.post("/backend/user/packages/index", body);
 
         const response = NextResponse.json(res.data, { status: 200 });
         response.headers.set("x-bff-route", "user-packages-index");

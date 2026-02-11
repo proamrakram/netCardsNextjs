@@ -47,7 +47,7 @@ export async function POST(req: Request) {
 
         // ✅ مهم: هذا المسار يجب أن يطابق Laravel عندك
         // لو Laravel عندك POST /admin/packages (بدون /api) -> غيّر السطر التالي
-        const res = await client.post("/api/backend/admin/packages", payload);
+        const res = await client.post("/backend/admin/packages", payload);
 
         return NextResponse.json(res.data, { status: 201 });
     } catch (err: any) {

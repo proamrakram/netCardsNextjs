@@ -13,7 +13,7 @@ export default async function AdminLayout({
   // 1) تحقق من تسجيل الدخول عبر Laravel
   let me: any;
   try {
-    me = await laravelServerFetch("/api/backend/auth/me");
+    me = await laravelServerFetch("/backend/auth/me");
   } catch {
     console.log("[ADMIN LAYOUT] redirect login");
     redirect("/auth/login");

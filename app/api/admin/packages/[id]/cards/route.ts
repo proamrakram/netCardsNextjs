@@ -19,7 +19,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         const per_page = url.searchParams.get("per_page") || "20";
 
         const client = await laravelAuthClient();
-        const res = await client.get(`/api/backend/admin/packages/${id}/cards`, {
+        const res = await client.get(`/backend/admin/packages/${id}/cards`, {
             params: { username, status, page, per_page },
         });
 
