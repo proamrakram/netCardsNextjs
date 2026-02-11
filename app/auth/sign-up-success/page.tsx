@@ -17,15 +17,15 @@ export default function SignUpSuccessPage() {
                 <CheckCircle className="h-10 w-10 text-accent" />
               </div>
               <CardTitle className="text-2xl">تم إنشاء حسابك بنجاح!</CardTitle>
-              <CardDescription>يرجى التحقق من بريدك الإلكتروني لتفعيل حسابك</CardDescription>
+              {/* <CardDescription>يرجى التحقق من بريدك الإلكتروني لتفعيل حسابك</CardDescription> */}
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-center gap-3 rounded-lg bg-muted p-4">
+              {/* <div className="flex items-center justify-center gap-3 rounded-lg bg-muted p-4">
                 <Mail className="h-6 w-6 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">
                   أرسلنا رسالة تأكيد إلى بريدك الإلكتروني. اضغط على الرابط في الرسالة لتفعيل حسابك.
                 </p>
-              </div>
+              </div> */}
               <Button variant="outline" className="w-full bg-transparent" asChild>
                 <Link href="/auth/login">العودة لتسجيل الدخول</Link>
               </Button>

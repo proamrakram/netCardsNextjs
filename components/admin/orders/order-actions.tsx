@@ -1,4 +1,3 @@
-// components/admin/order-actions.tsx
 "use client";
 
 import { useMemo, useState } from "react";
@@ -38,7 +37,6 @@ type OrderDTO = {
   confirmed_at?: string | null;
   cancelled_at?: string | null;
 
-  // لو راجع من Laravel:
   user?: { full_name?: string; phone?: string } | null;
   package?: { name_ar?: string; price?: string } | null;
   card?: { username: string; password: string } | null;
@@ -71,8 +69,8 @@ function paymentLabel(p: PaymentMethod) {
 
 function money(v: string | number) {
   const n = typeof v === "string" ? Number(v) : v;
-  if (Number.isFinite(n)) return `₪ ${n.toFixed(2)}`;
-  return `₪ ${v}`;
+  if (Number.isFinite(n)) return `${n.toFixed(2)} ₪`;
+  return `${v} ₪`;
 }
 
 function firstError(err: any) {
@@ -95,14 +93,14 @@ async function safeCopy(text: string) {
   }
 }
 
-export function OrderActions({ order }: { order: OrderDTO }) {
+export function OrderActions({ order, onChanged }: { order: OrderDTO, onChanged?: () => void; }) {
   const router = useRouter();
 
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isCancelOpen, setIsCancelOpen] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [busy, setBusy] = useState<null | "confirm" | "cancel">(null);
   const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
   const isPending = order.status === "pending";
@@ -113,38 +111,38 @@ export function OrderActions({ order }: { order: OrderDTO }) {
   }, [order.package?.name_ar]);
 
   const handleConfirm = async () => {
-    setIsLoading(true);
+    setBusy("confirm");
     setToast(null);
 
     try {
-      // ✅ هذا يفترض وجود Laravel endpoint لتأكيد الطلب
-      // غيّر المسار حسب باك اندك: مثال /api/admin/orders/{id}/confirm
-      await axiosBrowser.post<ApiResponse<any>>(`/api/admin/orders/${order.id}/confirm`, {});
+      await axiosBrowser.get<ApiResponse<any>>(`/api/admin/orders/${order.id}/confirm`);
+
       setToast({ type: "success", message: "تم تأكيد الطلب بنجاح." });
       setIsConfirmOpen(false);
       router.refresh();
+      onChanged?.();
     } catch (err: any) {
       setToast({ type: "error", message: firstError(err) });
     } finally {
-      setIsLoading(false);
+      setBusy(null);
     }
   };
 
   const handleCancel = async () => {
-    setIsLoading(true);
+    setBusy("cancel");
     setToast(null);
 
     try {
-      // ✅ هذا يفترض وجود Laravel endpoint لإلغاء الطلب
-      // غيّر المسار حسب باك اندك: مثال /api/admin/orders/{id}/cancel
-      await axiosBrowser.post<ApiResponse<any>>(`/api/admin/orders/${order.id}/cancel`, {});
+      await axiosBrowser.get<ApiResponse<any>>(`/api/admin/orders/${order.id}/cancel`);
+
       setToast({ type: "success", message: "تم إلغاء الطلب." });
       setIsCancelOpen(false);
       router.refresh();
+      onChanged?.();
     } catch (err: any) {
       setToast({ type: "error", message: firstError(err) });
     } finally {
-      setIsLoading(false);
+      setBusy(null);
     }
   };
 
@@ -169,6 +167,7 @@ export function OrderActions({ order }: { order: OrderDTO }) {
               className="text-green-700"
               onClick={() => setIsConfirmOpen(true)}
               aria-label="تأكيد"
+              disabled={busy !== null}
             >
               <CheckCircle2 className="h-4 w-4" />
             </Button>
@@ -179,6 +178,7 @@ export function OrderActions({ order }: { order: OrderDTO }) {
               className="text-destructive"
               onClick={() => setIsCancelOpen(true)}
               aria-label="إلغاء"
+              disabled={busy !== null}
             >
               <XCircle className="h-4 w-4" />
             </Button>
@@ -207,8 +207,8 @@ export function OrderActions({ order }: { order: OrderDTO }) {
             <div className="grid gap-3 rounded-lg border p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="space-y-1">
-                  <div className="text-xs text-muted-foreground">UUID</div>
-                  <code className="rounded bg-muted px-2 py-1 text-xs">{order.uuid}</code>
+                  <div className="text-xs text-muted-foreground">ID</div>
+                  <code className="rounded bg-muted px-2 py-1 text-xs">{order.id}</code>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -271,7 +271,6 @@ export function OrderActions({ order }: { order: OrderDTO }) {
               </div>
             </div>
 
-            {/* Card credentials (only when confirmed) */}
             {order.card && order.status === "confirmed" && (
               <div className="rounded-lg border p-4">
                 <div className="mb-3 flex items-center justify-between gap-2">
@@ -302,12 +301,23 @@ export function OrderActions({ order }: { order: OrderDTO }) {
               إغلاق
             </Button>
 
-            {order.status === "pending" && (
+            {isPending && (
               <div className="flex items-center gap-2">
-                <Button variant="destructive" onClick={() => { setIsViewOpen(false); setIsCancelOpen(true); }}>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    setIsViewOpen(false);
+                    setIsCancelOpen(true);
+                  }}
+                >
                   إلغاء الطلب
                 </Button>
-                <Button onClick={() => { setIsViewOpen(false); setIsConfirmOpen(true); }}>
+                <Button
+                  onClick={() => {
+                    setIsViewOpen(false);
+                    setIsConfirmOpen(true);
+                  }}
+                >
                   تأكيد الطلب
                 </Button>
               </div>
@@ -321,9 +331,7 @@ export function OrderActions({ order }: { order: OrderDTO }) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>تأكيد الطلب</DialogTitle>
-            <DialogDescription>
-              سيتم تأكيد الطلب وتخصيص بطاقة من الباقات المتوفرة (حسب منطق السيرفر). هل تريد المتابعة؟
-            </DialogDescription>
+            <DialogDescription>سيتم تأكيد الطلب وتخصيص بطاقة (حسب منطق السيرفر). هل تريد المتابعة؟</DialogDescription>
           </DialogHeader>
 
           {toast && (
@@ -336,11 +344,11 @@ export function OrderActions({ order }: { order: OrderDTO }) {
           )}
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsConfirmOpen(false)} disabled={isLoading}>
+            <Button variant="outline" onClick={() => setIsConfirmOpen(false)} disabled={busy !== null}>
               تراجع
             </Button>
-            <Button onClick={handleConfirm} disabled={isLoading}>
-              {isLoading ? <Loader2 className="ml-2 h-4 w-4 animate-spin" /> : <CheckCircle2 className="ml-2 h-4 w-4" />}
+            <Button onClick={handleConfirm} disabled={busy !== null}>
+              {busy === "confirm" ? <Loader2 className="ml-2 h-4 w-4 animate-spin" /> : <CheckCircle2 className="ml-2 h-4 w-4" />}
               تأكيد
             </Button>
           </DialogFooter>
@@ -365,11 +373,11 @@ export function OrderActions({ order }: { order: OrderDTO }) {
           )}
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsCancelOpen(false)} disabled={isLoading}>
+            <Button variant="outline" onClick={() => setIsCancelOpen(false)} disabled={busy !== null}>
               تراجع
             </Button>
-            <Button variant="destructive" onClick={handleCancel} disabled={isLoading}>
-              {isLoading ? <Loader2 className="ml-2 h-4 w-4 animate-spin" /> : <XCircle className="ml-2 h-4 w-4" />}
+            <Button variant="destructive" onClick={handleCancel} disabled={busy !== null}>
+              {busy === "cancel" ? <Loader2 className="ml-2 h-4 w-4 animate-spin" /> : <XCircle className="ml-2 h-4 w-4" />}
               إلغاء الطلب
             </Button>
           </DialogFooter>

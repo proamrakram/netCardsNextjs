@@ -129,8 +129,8 @@ function cn(...classes: Array<string | false | undefined | null>) {
 
 function formatMoneySAR(v: string | number | undefined | null) {
   const n = Number(v ?? 0);
-  if (Number.isNaN(n)) return "0.00 ر.س";
-  return `${n.toFixed(2)} ر.س`;
+  if (Number.isNaN(n)) return "0.00 ₪";
+  return `${n.toFixed(2)} ₪`;
 }
 
 function statusBadge(status: "pending" | "confirmed" | "cancelled") {
@@ -164,7 +164,7 @@ export default async function AdminDashboardPage() {
   const canViewDashboard = perms.includes("view admin dashboard");
 
   if (!isAdmin) redirect("/dashboard");
-  if (!canViewDashboard) redirect("/unauthorized"); // اعمل صفحة بسيطة لاحقًا
+  if (!canViewDashboard) redirect("/admin/unauthorized");
 
   // 2) Fetch dashboard data (match backend exactly)
   // overview + cards-status (GET)

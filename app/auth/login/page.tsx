@@ -11,8 +11,34 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { Wifi, Loader2 } from "lucide-react";
+import { Wifi, Loader2, Phone, EyeOff, Eye, Lock } from "lucide-react";
 import { axiosBrowser } from "@/lib/axios/browser"; // <-- تأكد من وجوده
+
+
+/** Input group with left icon + optional right action (like show/hide). */
+function InputGroup(props: {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  input: React.ReactNode;
+  hint?: string;
+}) {
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor={props.id}>{props.label}</Label>
+      <div className="relative">
+        {/* Left icon */}
+        <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground">
+          {props.icon}
+        </div>
+
+        {props.input}
+      </div>
+
+      {props.hint ? <p className="text-xs text-muted-foreground">{props.hint}</p> : null}
+    </div>
+  );
+}
 
 type LoginResponse = {
   success: boolean;
@@ -49,11 +75,14 @@ function extractErrorMessage(err: any): string {
 }
 
 export default function LoginPage() {
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  const [showPass, setShowPass] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +91,7 @@ export default function LoginPage() {
 
     try {
       const res = await axiosBrowser.post<LoginResponse>("/api/auth/login", {
-        email,
+        phone,
         password,
         device_name: "web", // مهم للـ Sanctum token naming
       });
@@ -101,7 +130,35 @@ export default function LoginPage() {
             <CardContent>
               <form onSubmit={handleLogin}>
                 <div className="flex flex-col gap-4">
+
+                  {/* Phone (required + LTR) */}
                   <div className="grid gap-2">
+
+                    <InputGroup
+                      id="phone"
+                      label="رقم الهاتف"
+                      icon={<Phone className="h-4 w-4" />}
+                      hint="مثال: 059xxxxxxxx"
+
+                      input={
+                        <Input
+                          id="phone"
+                          type="tel"
+                          placeholder="059 123 4567"
+                          required
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          dir="ltr"
+                          className="pl-10 text-left"
+                          autoComplete="tel"
+                          maxLength={10}
+                        />
+                      }
+                    />
+                  </div>
+
+
+                  {/* <div className="grid gap-2">
                     <Label htmlFor="email">البريد الإلكتروني</Label>
                     <Input
                       id="email"
@@ -114,20 +171,39 @@ export default function LoginPage() {
                       className="text-left"
                       autoComplete="email"
                     />
-                  </div>
+                  </div> */}
 
                   <div className="grid gap-2">
                     <Label htmlFor="password">كلمة المرور</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      dir="ltr"
-                      className="text-left"
-                      autoComplete="current-password"
-                    />
+
+                    <div className="relative">
+                      <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground">
+                        <Lock className="h-4 w-4" />
+                      </div>
+
+                      <Input
+                        id="password"
+                        type={showPass ? "text" : "password"}
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        dir="ltr"
+                        className="pl-10 pr-10 text-left"
+                        autoComplete="new-password"
+                        placeholder="••••••••"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => setShowPass((v) => !v)}
+                        className="absolute inset-y-0 right-2 flex items-center rounded-md px-2 text-muted-foreground hover:text-foreground"
+                        aria-label={showPass ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+                        tabIndex={-1}
+                      >
+                        {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+
                   </div>
 
                   {error && (

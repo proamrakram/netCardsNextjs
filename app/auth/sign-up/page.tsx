@@ -86,7 +86,7 @@ export default function SignUpPage() {
   const router = useRouter();
 
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [username, setUsername] = useState("");
 
@@ -102,7 +102,7 @@ export default function SignUpPage() {
   const canSubmit = useMemo(() => {
     return (
       fullName.trim().length > 0 &&
-      email.trim().length > 0 &&
+      // email.trim().length > 0 &&
       username.trim().length > 0 &&
       phone.trim().length > 0 && // ✅ phone required (Laravel)
       password.length >= 8 && // ✅ min 8 (Laravel)
@@ -110,7 +110,7 @@ export default function SignUpPage() {
       password === confirmPassword &&
       !isLoading
     );
-  }, [fullName, email, username, phone, password, confirmPassword, isLoading]);
+  }, [fullName, username, phone, password, confirmPassword, isLoading]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -139,7 +139,7 @@ export default function SignUpPage() {
     try {
       const res = await axiosBrowser.post<RegisterResponse>("/api/auth/register", {
         full_name: fullName.trim(),
-        email: email.trim(),
+        // email: email.trim(),
         phone: phone.trim(),
         username: username.trim(),
         password,
@@ -147,6 +147,8 @@ export default function SignUpPage() {
         device_name: "web",
       });
 
+      console.log(res);
+      
       const roles = res.data?.data?.user?.roles || [];
       if (roles.includes("admin")) router.push("/admin");
       else router.push("/auth/sign-up-success");
@@ -196,7 +198,7 @@ export default function SignUpPage() {
                 />
 
                 {/* Email (LTR + left aligned) */}
-                <InputGroup
+                {/* <InputGroup
                   id="email"
                   label="البريد الإلكتروني"
                   icon={<Mail className="h-4 w-4" />}
@@ -213,7 +215,7 @@ export default function SignUpPage() {
                       autoComplete="email"
                     />
                   }
-                />
+                /> */}
 
                 {/* Phone (required + LTR) */}
                 <InputGroup
@@ -221,17 +223,19 @@ export default function SignUpPage() {
                   label="رقم الهاتف"
                   icon={<Phone className="h-4 w-4" />}
                   hint="مثال: 059xxxxxxxx أو +97059xxxxxxx"
+
                   input={
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="+970 59 000 0000"
+                      placeholder="059 123 4567"
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       dir="ltr"
                       className="pl-10 text-left"
                       autoComplete="tel"
+                      maxLength={10}
                     />
                   }
                 />
@@ -252,6 +256,7 @@ export default function SignUpPage() {
                       dir="ltr"
                       className="pl-10 text-left"
                       autoComplete="username"
+                      maxLength={20}
                     />
                   }
                 />

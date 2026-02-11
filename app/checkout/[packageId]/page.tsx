@@ -1,3 +1,4 @@
+// app/checkout/[packageId]/page.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -21,6 +22,19 @@ type PackageDTO = {
   category?: { type?: "hourly" | "monthly" };
 };
 
+function formatILS(value: string | number) {
+  const n = typeof value === "number" ? value : Number(String(value).trim());
+  if (Number.isFinite(n)) {
+    return new Intl.NumberFormat("ar-PS", {
+      style: "currency",
+      currency: "ILS",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(n);
+  }
+  return `${value} ₪`;
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const params = useParams<{ packageId: string }>();
@@ -39,18 +53,18 @@ export default function CheckoutPage() {
       setErr(null);
 
       try {
-        await axiosBrowser.get("/api/store/me");
+        const res = await axiosBrowser.get(`/api/checkout?package_id=${packageId}`);
+        const item =
+          res.data?.data?.item ??
+          res.data?.data?.package ??
+          res.data?.data?.data?.item ??
+          res.data?.data;
 
-        const res = await axiosBrowser.get(`/api/store/packages/${packageId}`);
-        const item = res.data?.data?.item ?? res.data?.data?.package ?? res.data?.data?.data?.item;
-
-        // حسب response عندك: data.item
         if (!item) {
           router.push("/packages");
           return;
         }
 
-        // ensure available
         const count = item?.cards_counts?.available ?? 0;
         if (count <= 0) {
           router.push("/packages");
@@ -73,13 +87,13 @@ export default function CheckoutPage() {
   }, [packageId, router]);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col" dir="rtl">
       <Header />
 
       <main className="flex-1 bg-gradient-to-b from-primary/5 to-background py-12">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl">
-            <h1 className="mb-8 text-center text-3xl font-bold">إتمام الشراء</h1>
+            <h1 className="mb-8 text-right text-3xl font-bold">إتمام الشراء</h1>
 
             {err && (
               <div className="mb-6 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
@@ -99,13 +113,13 @@ export default function CheckoutPage() {
                 <CardContent className="space-y-4">
                   {loading || !pkg ? (
                     <div className="flex items-center justify-center py-16 text-muted-foreground">
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      <Loader2 className="ml-2 h-5 w-5 animate-spin" />
                       جارٍ التحميل...
                     </div>
                   ) : (
                     <>
                       <div className="flex items-start justify-between gap-4">
-                        <div>
+                        <div className="text-right">
                           <h3 className="text-xl font-bold">{pkg.name_ar}</h3>
                           <p className="text-sm text-muted-foreground">{pkg.description || ""}</p>
                         </div>
@@ -132,14 +146,16 @@ export default function CheckoutPage() {
 
                       <div className="flex items-center justify-between border-t pt-4">
                         <span className="text-lg font-medium">السعر الإجمالي</span>
-                        <span className="text-2xl font-bold text-primary">{pkg.price} ر.س</span>
+                        <span className="text-2xl font-bold text-primary">
+                          {formatILS(pkg.price)}
+                        </span>
                       </div>
                     </>
                   )}
                 </CardContent>
               </Card>
 
-              <CheckoutForm packageId={packageId} />
+              <CheckoutForm packageId={packageId} unitPrice={pkg?.price ?? 0} />
             </div>
           </div>
         </div>

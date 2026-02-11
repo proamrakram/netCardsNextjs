@@ -4,15 +4,17 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Wifi, LayoutDashboard, Package, CreditCard, Upload, Users, LogOut, Home } from "lucide-react";
+import { Wifi, LayoutDashboard, Package, CreditCard, Upload, Users, LogOut, Home, Tags, UserRoundCog } from "lucide-react";
 import { axiosBrowser } from "@/lib/axios/browser";
 
 const navItems = [
   { href: "/admin", label: "لوحة التحكم", icon: LayoutDashboard },
+  { href: "/admin/categories", label: "الفئات", icon: Tags },
   { href: "/admin/packages", label: "الباقات", icon: Package },
   { href: "/admin/cards", label: "البطاقات", icon: CreditCard },
   { href: "/admin/upload", label: "رفع Excel", icon: Upload },
   { href: "/admin/orders", label: "الطلبات", icon: Users },
+  { href: "/admin/users", label: "المستخدمين", icon: UserRoundCog },
 ];
 
 export function AdminSidebar() {

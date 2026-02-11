@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 import { laravelAuthClient, normalizeAxiosError } from "@/lib/bff/laravel";
 
-export async function GET(req: Request) {
+export async function GET(
+    _req: Request,
+    ctx: { params: Promise<{ id: string }> } // ✅ params Promise
+) {
     try {
-        const url = new URL(req.url);
+        const { id } = await ctx.params;        // ✅ unwrap
 
         const client = await laravelAuthClient();
-
-        const res = await client.get("/api/user/dashboard/overview", {
-            params: Object.fromEntries(url.searchParams.entries()),
-        });
+        const res = await client.get(`/api/admin/orders/${id}/confirm`);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {
