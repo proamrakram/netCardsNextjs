@@ -7,7 +7,7 @@ export async function GET(req: Request) {
 
         const client = await laravelAuthClient();
 
-        const res = await client.get("/api/user/dashboard/overview", {
+        const res = await client.get("/api/backend/user/dashboard/overview", {
             params: Object.fromEntries(url.searchParams.entries()),
         });
 

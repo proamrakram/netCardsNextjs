@@ -8,6 +8,8 @@ export async function POST(req: Request) {
         const client = laravelClient(); // ✅ بدون auth
         const res = await client.post("/api/backend/auth/login", body);
 
+        console.log("res", res);
+
         const token = res.data?.data?.token;
 
         if (!token) {

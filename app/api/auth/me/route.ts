@@ -7,12 +7,6 @@ export async function GET() {
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
 
-    console.log(token);
-    console.log(token);
-    console.log(token);
-    console.log(token);
-
-
     if (!token) {
         return NextResponse.json(
             { success: false, message: "Unauthenticated.", data: null },
@@ -22,7 +16,7 @@ export async function GET() {
 
     try {
         const client = await laravelAuthClient();
-        const res = await client.get("/api/auth/me");
+        const res = await client.get("/api/backend/auth/me");
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {
         const { status, data } = normalizeAxiosError(err);

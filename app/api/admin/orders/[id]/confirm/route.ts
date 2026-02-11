@@ -9,7 +9,7 @@ export async function GET(
         const { id } = await ctx.params;        // ✅ unwrap
 
         const client = await laravelAuthClient();
-        const res = await client.get(`/api/admin/orders/${id}/confirm`);
+        const res = await client.get(`/api/backend/admin/orders/${id}/confirm`);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {

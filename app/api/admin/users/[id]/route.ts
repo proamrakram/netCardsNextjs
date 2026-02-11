@@ -6,7 +6,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
         const { id } = await params;
 
         const client = await laravelAuthClient();
-        const res = await client.get(`/api/admin/users/${id}`);
+        const res = await client.get(`/api/backend/admin/users/${id}`);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {
@@ -21,7 +21,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         const body = await req.json();
 
         const client = await laravelAuthClient();
-        const res = await client.put(`/api/admin/users/${id}`, body);
+        const res = await client.put(`/api/backend/admin/users/${id}`, body);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {
@@ -35,7 +35,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
         const { id } = await params;
 
         const client = await laravelAuthClient();
-        const res = await client.delete(`/api/admin/users/${id}`);
+        const res = await client.delete(`/api/backend/admin/users/${id}`);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {

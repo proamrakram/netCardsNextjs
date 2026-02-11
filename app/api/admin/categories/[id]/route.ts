@@ -27,7 +27,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         const with_packages = url.searchParams.get("with_packages") ?? "0";
 
         const client = await laravelAuthClient();
-        const res = await client.get(`/api/admin/categories/${id}`, {
+        const res = await client.get(`/api/backend/admin/categories/${id}`, {
             params: { with_packages },
         });
 
@@ -64,7 +64,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         });
 
         const client = await laravelAuthClient();
-        const res = await client.put(`/api/admin/categories/${id}`, payload);
+        const res = await client.put(`/api/backend/admin/categories/${id}`, payload);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {
@@ -86,7 +86,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
         }
 
         const client = await laravelAuthClient();
-        const res = await client.delete(`/api/admin/categories/${id}`);
+        const res = await client.delete(`/api/backend/admin/categories/${id}`);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {

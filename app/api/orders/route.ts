@@ -13,7 +13,7 @@ export async function POST(req: Request) {
         }
 
         const client = await laravelAuthClient();
-        const res = await client.post("/api/user/orders/store", {
+        const res = await client.post("/api/backend/user/orders/store", {
             package_id: Number(body.package_id),
             payment_method: body.payment_method ?? "BOP",
             notes: body.notes ?? null,

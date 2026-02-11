@@ -13,7 +13,7 @@ export async function GET(req: Request) {
 
         const client = await laravelAuthClient();
         // نحافظ على نفس الـ contract: GET هنا -> POST في Laravel
-        const res = await client.post("/api/admin/categories/index", params);
+        const res = await client.post("/api/backend/admin/categories/index", params);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
         const body = await req.json();
 
         const client = await laravelAuthClient();
-        const res = await client.post("/api/admin/categories/index", body);
+        const res = await client.post("/api/backend/admin/categories/index", body);
 
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {

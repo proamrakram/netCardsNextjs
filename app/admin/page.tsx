@@ -152,7 +152,7 @@ export default async function AdminDashboardPage() {
   // 1) Auth + permission guard (source of truth: /api/auth/me)
   let me: MeResponse;
   try {
-    me = (await laravelServerFetch("/api/auth/me")) as MeResponse;
+    me = (await laravelServerFetch("/api/backend/auth/me")) as MeResponse;
   } catch {
     redirect("/auth/login");
   }
@@ -169,27 +169,27 @@ export default async function AdminDashboardPage() {
   // 2) Fetch dashboard data (match backend exactly)
   // overview + cards-status (GET)
   const overview = (await laravelServerFetch(
-    "/api/admin/dashboard/overview"
+    "/api/backend/admin/dashboard/overview"
   )) as OverviewResponse;
 
   const cardsStatus = (await laravelServerFetch(
-    "/api/admin/dashboard/cards-status"
+    "/api/backend/admin/dashboard/cards-status"
   )) as CardsStatusResponse;
 
   // latest-orders + orders-timeseries (POST)
   const latestOrders = (await laravelServerFetch(
-    "/api/admin/dashboard/latest-orders",
+    "/api/backend/admin/dashboard/latest-orders",
     { method: "POST", data: { limit: 5 } }
   )) as LatestOrdersResponse;
 
   const timeseries = (await laravelServerFetch(
-    "/api/admin/dashboard/orders-timeseries",
+    "/api/backend/admin/dashboard/orders-timeseries",
     { method: "POST", data: { days: 30 } }
   )) as OrdersTimeseriesResponse;
 
   // packages-inventory (GET) — optional use
   const packagesInventory = (await laravelServerFetch(
-    "/api/admin/dashboard/packages-inventory"
+    "/api/backend/admin/dashboard/packages-inventory"
   )) as PackagesInventoryResponse;
 
   // 3) Normalize values for UI

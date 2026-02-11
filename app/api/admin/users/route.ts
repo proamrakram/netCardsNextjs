@@ -6,7 +6,7 @@ export async function POST(req: Request) {
         const body = await req.json();
 
         const client = await laravelAuthClient();
-        const res = await client.post("/api/admin/users", body);
+        const res = await client.post("/api/backend/admin/users", body);
 
         return NextResponse.json(res.data, { status: 201 });
     } catch (err: any) {

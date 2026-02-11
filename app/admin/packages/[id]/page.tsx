@@ -71,7 +71,7 @@ async function resolveNumericIdFromUuid(uuidOrId: string): Promise<string> {
     // إذا كانت رقم أصلاً، رجّعها مباشرة
     if (/^\d+$/.test(uuidOrId)) return uuidOrId;
 
-    const listRes = await laravelServerFetch("/api/admin/packages?status=active");
+    const listRes = await laravelServerFetch("/api/backend/admin/packages?status=active");
     const listPayload = listRes as ApiResponse<{ items: Array<{ id: string; uuid: string }> }>;
 
     const items = listPayload?.data?.items ?? [];
@@ -111,7 +111,7 @@ export default async function AdminPackageDetailsPage({
     }
 
     // 1) package details
-    const pRes = await laravelServerFetch(`/api/admin/packages/${id}`);
+    const pRes = await laravelServerFetch(`/api/backend/admin/packages/${id}`);
     const pPayload = pRes as ApiResponse<{ item: PackageDTO }>;
     const pkg = pPayload?.data?.item;
 
@@ -127,7 +127,7 @@ export default async function AdminPackageDetailsPage({
 
     // 2) cards list
     const cQuery = qs({ username, status, page: page ?? "1", per_page: per_page ?? "20" });
-    const cRes = await laravelServerFetch(`/api/admin/packages/${id}/cards${cQuery}`);
+    const cRes = await laravelServerFetch(`/api/backend/admin/packages/${id}/cards${cQuery}`);
     const cPayload = cRes as ApiResponse<{ items: PackageCardRow[]; meta: Meta }>;
 
     const cards = cPayload?.data?.items ?? [];

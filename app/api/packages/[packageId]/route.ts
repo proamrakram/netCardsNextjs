@@ -9,7 +9,7 @@ export async function GET(
     try {
         const { packageId } = await ctx.params;
         const client = await laravelAuthClient();
-        const res = await client.get(`/api/user/packages/${packageId}`);
+        const res = await client.get(`/api/backend/user/packages/${packageId}`);
         return NextResponse.json(res.data, { status: 200 });
     } catch (err: any) {
         const { status, data } = normalizeAxiosError(err);
