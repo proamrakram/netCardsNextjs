@@ -6,7 +6,7 @@ export async function POST(req: Request) {
         const body = await req.json();
 
         const client = await laravelAuthClient();
-        const res = await client.post("/api/auth/register", body);
+        const res = await client.post("/backend/auth/register", body);
 
         const token = res.data?.data?.token;
 
